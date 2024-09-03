@@ -1,44 +1,4 @@
-/* #app {
-    height: 100%;
-  }
-  html,
-  body {
-    position: relative;
-    height: 100%;
-  }
-  
-  body {
-    background: #eee;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .swiper {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-  
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-   */
+
    #app {
     height: 100%;
   }
@@ -61,14 +21,14 @@
   .swiper {
     width: 100%;
   
-    height: fit-content; /* ارتفاع را به auto تغییر می‌دهیم تا براساس محتوای داخلی تنظیم شود */
+    height: fit-content; 
   }
   .swiper-slide {
     text-align: center;
     font-size: 18px;
     background: #fff;
   
-    /* Center slide text vertically */
+   
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,7 +39,49 @@
   .swiper-slide img {
     display: block;
     width: 100%;
-    height: auto; /* ارتفاع را به auto تغییر می‌دهیم */
-    max-height: 400px; /* حداکثر ارتفاع برای تصاویر را به 300px محدود می‌کنیم */
+    height: auto; 
+    max-height: 400px; 
     object-fit: cover;
   }
+   
+/*   #app {
+    height: 100%;
+  }
+  html,
+  body {
+    position: relative;
+    height: 100%;
+  }
+  
+  body {
+    background: #eee;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+  
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+   */

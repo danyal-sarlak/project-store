@@ -26,18 +26,21 @@ export default function BasketItem({ product , invoice}) {
               alt={name}
             />
             <div
-              className="absolute bottom-3 right-3 w-6 h-6 bg-gray-300 text-yellow-600 rounded-full transform translate-x-1/2 translate-y-1/2"
+              className="absolute md:bottom-3 md:right-3 right-20 bottom-2 w-6 h-6 bg-gray-300 text-yellow-600 rounded-full transform translate-x-1/2 translate-y-1/2"
             >
               {quantity}
             </div>
           </div>
 
           <div className="flex flex-col p-2 gap-y-1 items-start text-left">
+            
             <h2>{name}</h2>
+            
             <h2>{material}</h2>
             <p className="text-gray-400">
             {details}
             </p>
+            
             <div className="flex pt-1">
               <FaStar className="text-yellow-600" />
               <FaStar className="text-yellow-600" />
@@ -45,15 +48,22 @@ export default function BasketItem({ product , invoice}) {
               <CiStar className="text-yellow-600" />
               <CiStar className="text-yellow-600" />
             </div>
+            
           </div>
         </div>
         <div className="flex flex-col items-center gap-y-2 pr-4">
         <p className="text-right ">{totalPriceForItem}$</p>
+        
         <div className="bg-red-500 p-2   rounded-sm ">
         <IoTrashOutline className="text-white cursor-pointer" 
         onClick={() => dispatch(removeItem(product))}
         />
         </div>
+        {item?.size && (
+              <p className=" md:font-semibold flex md:text-sm   text-xs font-thin">
+                <span>Size:</span> {item.size}
+              </p>
+            )}
 
         </div>
        
@@ -62,3 +72,4 @@ export default function BasketItem({ product , invoice}) {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 
-   /*  import React, { useContext, useEffect, useState } from 'react';
+    import React, { useContext, useEffect, useState } from 'react';
     import { useNavigate } from 'react-router-dom';
     import { useDispatch, useSelector } from 'react-redux';
     import { LikesContext } from '../Contexts/LikesProvider';
@@ -85,9 +85,9 @@ import Loading from '../Components/Loading';
                             onMouseEnter={() => setHoveredProductId(product.id)}
                             onMouseLeave={() => setHoveredProductId(null)}
                         >
-                            <img className="rounded-lg w-full h-44 object-cover" src={product.image} alt="" />
+                            <img className="rounded-lg  w-full   lg:h-44 md:h-36 object-cover" src={product.image} alt="" />
     
-                            <div className="absolute top-2 z-10 right-1 rounded-full w-6 h-6 bg-white flex items-center justify-center">
+                            <div className="absolute top-2 z-1  right-1 rounded-full w-6 h-6 bg-white flex items-center justify-center">
                                 <FaRegHeart
                                     className={`text-gray-500 cursor-pointer ${likes[product.id] > 0 ? 'text-red-500' : ''}`}
                                     onClick={() => handleHeartClick(product.id)}
@@ -146,93 +146,6 @@ import Loading from '../Components/Loading';
                 )}
             </div>
         );
-    } */
-    
-    // Products.js
-    import React, { lazy, Suspense, useContext, useState } from "react";
-    import { useNavigate } from "react-router-dom";
-    import { useDispatch, useSelector } from "react-redux";
-    import { LikesContext } from "../Contexts/LikesProvider";
-    import { CategoriesContext } from "../Contexts/CategoriesContext";
-    import { addItem, basketState, removeItem } from "../redux/baketSlice";
-    import AddItemModal from "../Components/AddItemModal";
-import Loading from "../Components/Loading";
-    
-    const LazyProductItem = lazy(() => import("../Components/ProductItem"));
-    
-    
-    export default function Products() {
-      const { likes, setLikes } = useContext(LikesContext);
-      const { filteredProducts, isProductsLoading } = useContext(CategoriesContext);
-      const [selectedProduct, setSelectedProduct] = useState(null);
-      const [isModalVisible, setIsModalVisible] = useState(false);
-    
-      const navigate = useNavigate();
-      const dispatch = useDispatch();
-      const { items } = useSelector(basketState);
-    
-      const handleBasketIconClick = (product) => {
-        const Authorisation = localStorage.getItem("token");
-    
-        if (Authorisation) {
-          if (!isInBasket(product.id)) {
-            setSelectedProduct(product);
-            setIsModalVisible(true);
-          }
-        } else {
-          navigate("/login");
-        }
-      };
-    
-      const closeModal = () => {
-        setIsModalVisible(false);
-        setSelectedProduct(null);
-      };
-    
-      const handleConfirm = () => {
-        dispatch(addItem(selectedProduct));
-        closeModal();
-      };
-    
-      const isInBasket = (productId) => {
-        return items.some((item) => item.id === productId);
-      };
-    
-      if (isProductsLoading) {
-        return   <div className="flex justify-center pt-8 h-screen">
-        <Loading/>
-    </div>; // نمایش صفحه بارگذاری
     }
-
     
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7 py-4">
-          <Suspense
-            fallback={
-              <div className=" col-start-3 col-end-4 pt-8">
-               <Loading/>
-              </div>
-            }
-          >
-            {filteredProducts.map((product) => (
-              <LazyProductItem
-                key={product.id}
-                product={product}
-                onBasketIconClick={handleBasketIconClick}
-              />
-            ))}
-          </Suspense>
     
-          {isModalVisible && selectedProduct && (
-            <AddItemModal
-              product={selectedProduct}
-              closeModal={closeModal}
-              onConfirm={handleConfirm}
-            />
-          )}
-        </div>
-      );
-    }
-
-
- 

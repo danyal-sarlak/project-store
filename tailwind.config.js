@@ -10,8 +10,12 @@ export default {
         // اضافه کردن grid-row-17
         '17': 'repeat(17, minmax(0, 1fr))',
       },
+      zIndex: {
+        '1': '1', // اضافه کردن zindex1
+      },
     },
   },
   plugins: [],
 }
+
 

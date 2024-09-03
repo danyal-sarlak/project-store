@@ -1,15 +1,4 @@
-/* import React from 'react'
-import { TiTick } from "react-icons/ti";
-export default function SignupModal() {
-  return (
-    <div className='w-[10%] h-[10%] flex items-center justify-center bg-white rounded-md  '>
-    
-     <p className='text-green-500 font-bold'>Sign up Success</p>
-     <TiTick className='text-green-500 w-5 h-5'/>
-    </div>
-  )
-}
- */
+
 import React from "react";
 import { createPortal } from "react-dom";
 import { TiTick } from "react-icons/ti";
