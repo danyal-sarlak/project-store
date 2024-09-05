@@ -23,7 +23,7 @@ export default function ProductItem({
                 onMouseEnter={() => onHover(product.id)}
                 onMouseLeave={() => onLeave()}
             >
-                <img className="rounded-lg w-full h-44 object-cover" src={product.image} alt="" />
+                <img className="rounded-lg h-56  w-full sm:h-48 object-fill" src={product.image} alt="" />
 
                 <div className="absolute top-2 z-10 right-1 rounded-full w-6 h-6 bg-white flex items-center justify-center">
                     <FaRegHeart
