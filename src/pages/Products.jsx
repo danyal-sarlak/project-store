@@ -1,151 +1,218 @@
+/* import React, { lazy, Suspense, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { LikesContext } from "../Contexts/LikesProvider";
+import { CategoriesContext } from "../Contexts/CategoriesContext";
+import { addItem, basketState, removeItem } from "../redux/baketSlice";
+import AddItemModal from "../Components/AddItemModal";
+import Loading from "../Components/Loading";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-    import React, { useContext, useEffect, useState } from 'react';
-    import { useNavigate } from 'react-router-dom';
-    import { useDispatch, useSelector } from 'react-redux';
-    import { LikesContext } from '../Contexts/LikesProvider';
-    import { CategoriesContext } from '../Contexts/CategoriesContext';
-    import { addItem, basketState, removeItem } from '../redux/baketSlice';
-    import AddItemModal from '../Components/AddItemModal';
-    import { FaRegHeart, FaStar } from 'react-icons/fa';
-    import { SlBasket } from 'react-icons/sl';
-    import { SiTicktick } from 'react-icons/si';
-    import { IoTrashOutline } from 'react-icons/io5';
-    import { CiStar } from 'react-icons/ci';
-import Loading from '../Components/Loading';
-   
-    export default function Products() {
-        const { likes, setLikes } = useContext(LikesContext);
-        const { filteredProducts, isProductsLoading } = useContext(CategoriesContext); // استفاده از وضعیت بارگذاری
-        const [hoveredProductId, setHoveredProductId] = useState(null);
-        const [selectedProduct, setSelectedProduct] = useState(null);
-        const [isModalVisible, setIsModalVisible] = useState(false);
-    
-        const navigate = useNavigate();
-        const dispatch = useDispatch();
-        const { items } = useSelector(basketState);
-    
-        useEffect(() => {
-            const storedLikes = localStorage.getItem('likes');
-            if (storedLikes) {
-                setLikes(JSON.parse(storedLikes));
-            }
-        }, [setLikes]);
-    
-        useEffect(() => {
-            localStorage.setItem('likes', JSON.stringify(likes));
-        }, [likes]);
-    
-        const isInBasket = (productId) => {
-            return items.some(item => item.id === productId);
-        };
-    
-        const handleBasketIconClick = (product) => {
-            const Authorisation = localStorage.getItem("token");
-    
-            if (Authorisation) {
-                if (!isInBasket(product.id)) {
-                    setSelectedProduct(product);
-                    setIsModalVisible(true);
-                }
-            } else {
-                navigate('/login');
-            }
-        };
-    
-        const closeModal = () => {
-            setIsModalVisible(false);
-            setSelectedProduct(null);
-        };
-    
-        const handleConfirm = () => {
-            dispatch(addItem(selectedProduct));
-            closeModal();
-        };
-    
-        const handleHeartClick = (productId) => {
-            setLikes(prevLikes => {
-                const currentLikes = prevLikes[productId] || 0;
-                const updatedLikes = currentLikes + (currentLikes > 0 ? -1 : 1);
-                return { ...prevLikes, [productId]: updatedLikes };
-            });
-        };
-    
-        if (isProductsLoading) {
-            return   <div className="flex justify-center pt-8 h-screen">
-            <Loading/>
-        </div>; // نمایش صفحه بارگذاری
-        }
-    
-        return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7 py-4">
-                {filteredProducts.map(product => (
-                    <div key={product.id} className="p-1 rounded-lg">
-                        <span
-                            className="relative block"
-                            onMouseEnter={() => setHoveredProductId(product.id)}
-                            onMouseLeave={() => setHoveredProductId(null)}
-                        >
-                            <img className="rounded-lg  w-full   lg:h-44 md:h-36 object-cover" src={product.image} alt="" />
-    
-                            <div className="absolute top-2 z-1  right-1 rounded-full w-6 h-6 bg-white flex items-center justify-center">
-                                <FaRegHeart
-                                    className={`text-gray-500 cursor-pointer ${likes[product.id] > 0 ? 'text-red-500' : ''}`}
-                                    onClick={() => handleHeartClick(product.id)}
-                                />
-                            </div>
-    
-                            {hoveredProductId === product.id && (
-                                <div className="absolute inset-0 bg-black rounded-lg bg-opacity-50 flex items-center justify-center text-white font-bold text-lg">
-                                    {isInBasket(product.id) ? (
-                                        <div className="absolute inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center text-white font-bold text-lg">
-                                            <div className="bg-black text-white p-2 rounded-full"><SiTicktick /></div>
-    
-                                            <div className="top-1 z-10 rounded-full absolute right-1 p-2 bg-red-500">
-                                                <IoTrashOutline
-                                                    className="text-white cursor-pointer"
-                                                    onClick={() => dispatch(removeItem(product))}
-                                                />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div
-                                            onClick={() => handleBasketIconClick(product)}
-                                            className="rounded-full cursor-pointer w-7 h-7 bg-white flex items-center justify-center"
-                                        >
-                                            <SlBasket className="text-gray-500" />
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </span>
-    
-                        <div className="flex justify-between pt-2">
-                            <h2>{product.name}</h2>
-                            <h2>{product.price}$</h2>
-                        </div>
-                        <h2>{product.material}</h2>
-                        <p className="text-gray-500 font-medium pt-1">
-                            {product.details}
-                        </p>
-                        <div className="flex pt-2">
-                            <FaStar className="text-yellow-600" />
-                            <FaStar className="text-yellow-600" />
-                            <FaStar className="text-yellow-600" />
-                            <CiStar className="text-yellow-600" />
-                            <CiStar className="text-yellow-600" />
-                        </div>
-                    </div>
-                ))}
-    
-                {isModalVisible && selectedProduct && (
-                    <AddItemModal
-                        product={selectedProduct}
-                        closeModal={closeModal}
-                        onConfirm={handleConfirm}
-                    />
-                )}
-            </div>
-        );
+const LazyProductItem = lazy(() => import("../Components/ProductItem"));
+
+export default function Products() {
+  const { likes, setLikes } = useContext(LikesContext);
+  const { filteredProducts, isProductsLoading } = useContext(CategoriesContext);
+  const [hoveredProductId, setHoveredProductId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { items } = useSelector(basketState);
+
+  useEffect(() => {
+    const storedLikes = localStorage.getItem("likes");
+    if (storedLikes) {
+      setLikes(JSON.parse(storedLikes));
     }
-    
-    
+  }, [setLikes]);
+
+  useEffect(() => {
+    localStorage.setItem("likes", JSON.stringify(likes));
+  }, [likes]);
+
+  const isInBasket = (productId) => {
+    return items.some((item) => item.id === productId);
+  };
+
+  const handleBasketIconClick = (product) => {
+    const Authorisation = localStorage.getItem("token");
+
+    if (Authorisation) {
+      if (!isInBasket(product.id)) {
+        setSelectedProduct(product);
+        setIsModalVisible(true);
+      }
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setSelectedProduct(null);
+  };
+
+  const handleConfirm = () => {
+    dispatch(addItem(selectedProduct));
+    closeModal();
+  };
+
+  const handleHeartClick = (productId) => {
+    setLikes((prevLikes) => {
+      const currentLikes = prevLikes[productId] || 0;
+      const updatedLikes = currentLikes + (currentLikes > 0 ? -1 : 1);
+      return { ...prevLikes, [productId]: updatedLikes };
+    });
+  };
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-7 py-4">
+      {filteredProducts.map((product) => (
+        <Suspense
+          fallback={
+            <div className="flex justify-center  h-screen">
+              <Skeleton />
+            </div>
+          }
+          key={product.id}
+        >
+          <LazyProductItem
+            product={product}
+            likes={likes}
+            hoveredProductId={hoveredProductId}
+            isInBasket={isInBasket}
+            onHover={setHoveredProductId}
+            onLeave={() => setHoveredProductId(null)}
+            onHeartClick={handleHeartClick}
+            onBasketIconClick={handleBasketIconClick}
+            onRemoveItem={(product) => dispatch(removeItem(product))}
+          />
+        </Suspense>
+      ))}
+
+      {isModalVisible && selectedProduct && (
+        <AddItemModal
+          product={selectedProduct}
+          closeModal={closeModal}
+          onConfirm={handleConfirm}
+        />
+      )}
+    </div>
+  );
+}
+ */
+import React, { lazy, Suspense, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { LikesContext } from "../Contexts/LikesProvider";
+import { CategoriesContext } from "../Contexts/CategoriesContext";
+import { addItem, basketState, removeItem } from "../redux/baketSlice";
+import AddItemModal from "../Components/AddItemModal";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Loading from "../Components/Loading";
+
+const LazyProductItem = lazy(() => import("../Components/ProductItem"));
+
+export default function Products() {
+  const { likes, setLikes } = useContext(LikesContext);
+  const { filteredProducts, isProductsLoading } = useContext(CategoriesContext);
+  const [hoveredProductId, setHoveredProductId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { items } = useSelector(basketState);
+
+  useEffect(() => {
+    const storedLikes = localStorage.getItem("likes");
+    if (storedLikes) {
+      setLikes(JSON.parse(storedLikes));
+    }
+  }, [setLikes]);
+
+  useEffect(() => {
+    localStorage.setItem("likes", JSON.stringify(likes));
+  }, [likes]);
+
+  const isInBasket = (productId) => {
+    return items.some((item) => item.id === productId);
+  };
+
+  const handleBasketIconClick = (product) => {
+    const Authorisation = localStorage.getItem("token");
+
+    if (Authorisation) {
+      if (!isInBasket(product.id)) {
+        setSelectedProduct(product);
+        setIsModalVisible(true);
+      }
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setSelectedProduct(null);
+  };
+
+  const handleConfirm = () => {
+    dispatch(addItem(selectedProduct));
+    closeModal();
+  };
+
+  const handleHeartClick = (productId) => {
+    setLikes((prevLikes) => {
+      const currentLikes = prevLikes[productId] || 0;
+      const updatedLikes = currentLikes + (currentLikes > 0 ? -1 : 1);
+      return { ...prevLikes, [productId]: updatedLikes };
+    });
+  };
+  if (isProductsLoading) {
+    return <div className="flex justify-center pt-8 h-screen">
+        <Loading/>
+    </div>; // نمایش صفحه بارگذاری
+  }
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-7 py-4">
+      {filteredProducts.map((product) => (
+        <Suspense
+          fallback={
+            <div className="p-1 rounded-lg bg-gray-300">
+              <Skeleton height={200} />
+              <Skeleton height={20} width="60%" className="bg-gray-400" />
+              <Skeleton height={20} width="40%" className="bg-gray-400" />
+              <Skeleton height={20} width="80%" className="bg-gray-400" />
+            </div>
+          }
+          key={product.id}
+        >
+          <LazyProductItem
+            product={product}
+            likes={likes}
+            hoveredProductId={hoveredProductId}
+            isInBasket={isInBasket}
+            onHover={setHoveredProductId}
+            onLeave={() => setHoveredProductId(null)}
+            onHeartClick={handleHeartClick}
+            onBasketIconClick={handleBasketIconClick}
+            onRemoveItem={(product) => dispatch(removeItem(product))}
+          />
+        </Suspense>
+      ))}
+
+      {isModalVisible && selectedProduct && (
+        <AddItemModal
+          product={selectedProduct}
+          closeModal={closeModal}
+          onConfirm={handleConfirm}
+        />
+      )}
+    </div>
+  );
+}

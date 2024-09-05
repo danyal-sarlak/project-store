@@ -1,45 +1,34 @@
-// src/Components/ProductItem.js
-import React, { useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addItem, basketState, removeItem } from '../redux/baketSlice';
-import { LikesContext } from '../Contexts/LikesProvider';
+import React from 'react';
+import { FaRegHeart, FaStar } from 'react-icons/fa';
 import { SlBasket } from 'react-icons/sl';
 import { SiTicktick } from 'react-icons/si';
 import { IoTrashOutline } from 'react-icons/io5';
-import { FaRegHeart, FaStar } from 'react-icons/fa';
 import { CiStar } from 'react-icons/ci';
 
-export default function ProductItem({ product, onBasketIconClick }) {
-    const { likes, setLikes } = useContext(LikesContext);
-    const [hoveredProductId, setHoveredProductId] = useState(null);
-    const dispatch = useDispatch();
-    const { items } = useSelector(basketState);
-
-    const isInBasket = (productId) => {
-        return items.some(item => item.id === productId);
-    };
-
-    const handleHeartClick = (productId) => {
-        setLikes(prevLikes => {
-            const currentLikes = prevLikes[productId] || 0;
-            const updatedLikes = currentLikes + (currentLikes > 0 ? -1 : 1);
-            return { ...prevLikes, [productId]: updatedLikes };
-        });
-    };
-
+export default function ProductItem({
+    product,
+    likes,
+    hoveredProductId,
+    isInBasket,
+    onHover,
+    onLeave,
+    onHeartClick,
+    onBasketIconClick,
+    onRemoveItem
+}) {
     return (
         <div key={product.id} className="p-1 rounded-lg">
             <span
                 className="relative block"
-                onMouseEnter={() => setHoveredProductId(product.id)}
-                onMouseLeave={() => setHoveredProductId(null)}
+                onMouseEnter={() => onHover(product.id)}
+                onMouseLeave={() => onLeave()}
             >
-                <img className="rounded-lg w-full  h-44 object-cover" src={product.image} alt="" />
+                <img className="rounded-lg w-full h-44 object-cover" src={product.image} alt="" />
 
                 <div className="absolute top-2 z-10 right-1 rounded-full w-6 h-6 bg-white flex items-center justify-center">
                     <FaRegHeart
                         className={`text-gray-500 cursor-pointer ${likes[product.id] > 0 ? 'text-red-500' : ''}`}
-                        onClick={() => handleHeartClick(product.id)}
+                        onClick={() => onHeartClick(product.id)}
                     />
                 </div>
 
@@ -52,7 +41,7 @@ export default function ProductItem({ product, onBasketIconClick }) {
                                 <div className="top-1 z-10 rounded-full absolute right-1 p-2 bg-red-500">
                                     <IoTrashOutline
                                         className="text-white cursor-pointer"
-                                        onClick={() => dispatch(removeItem(product))}
+                                        onClick={() => onRemoveItem(product)}
                                     />
                                 </div>
                             </div>
@@ -86,4 +75,3 @@ export default function ProductItem({ product, onBasketIconClick }) {
         </div>
     );
 }
-
