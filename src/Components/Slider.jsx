@@ -21,8 +21,8 @@
           modules={[Pagination, Autoplay]}
           className="mySwiper"
           autoplay={{
-            delay: 90000, // زمان تاخیر در میلی‌ثانیه (در این مثال 3 ثانیه)
-            disableOnInteraction: false, // اگر کاربر تعامل داشته باشد، Autoplay متوقف نمی‌شود
+            delay: 1000, 
+            disableOnInteraction: false, 
           }}
         >
           <SwiperSlide >

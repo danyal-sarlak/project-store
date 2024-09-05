@@ -4,9 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // بازیابی آیتم‌های ذخیره‌شده در localStorage یا استفاده از مقادیر پیش‌فرض
 const initialState = {
     items: JSON.parse(localStorage.getItem("basketItems")) || [],
-    invoice: {
-        totalPrice: 0,
-    }
+   
 };
 
 const basketSlice = createSlice({
@@ -30,7 +28,7 @@ const basketSlice = createSlice({
             } else {
                 state.items = [...state.items, { ...item, quantity: 1 }];
             }
-            state.invoice.totalPrice += item.price;
+            
 
             // ذخیره در localStorage بعد از هر تغییر
             localStorage.setItem("basketItems", JSON.stringify(state.items));
@@ -54,7 +52,7 @@ const basketSlice = createSlice({
                 } else {
                     state.items = state.items.filter((_item) => _item.id !== item.id);
                 }
-                state.invoice.totalPrice - item.price;
+                
 
                 // ذخیره در localStorage بعد از هر تغییر
                 localStorage.setItem("basketItems", JSON.stringify(state.items));

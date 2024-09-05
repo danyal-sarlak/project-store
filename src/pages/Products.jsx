@@ -6,10 +6,9 @@ import { LikesContext } from "../Contexts/LikesProvider";
 import { CategoriesContext } from "../Contexts/CategoriesContext";
 import { addItem, basketState, removeItem } from "../redux/baketSlice";
 import AddItemModal from "../Components/AddItemModal";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import Loading from "../Components/Loading";
 import LoadingSkeleton from "../Components/LoadingSkeleton";
+import { motion } from "framer-motion";
 
 const LazyProductItem = lazy(() => import("../Components/ProductItem"));
 
@@ -69,31 +68,40 @@ export default function Products() {
       return { ...prevLikes, [productId]: updatedLikes };
     });
   };
+
   if (isProductsLoading) {
-    return <div className="flex justify-center pt-8 h-screen">
-        <Loading/>
-    </div>; // نمایش صفحه بارگذاری
+    return (
+      <div className="flex justify-center pt-8 h-screen">
+        <Loading />
+      </div>
+    );
   }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-7 py-4">
       {filteredProducts.map((product) => (
         <Suspense
-          fallback={
-          <LoadingSkeleton/>
-          }
+          fallback={<LoadingSkeleton />}
           key={product.id}
         >
-          <LazyProductItem
-            product={product}
-            likes={likes}
-            hoveredProductId={hoveredProductId}
-            isInBasket={isInBasket}
-            onHover={setHoveredProductId}
-            onLeave={() => setHoveredProductId(null)}
-            onHeartClick={handleHeartClick}
-            onBasketIconClick={handleBasketIconClick}
-            onRemoveItem={(product) => dispatch(removeItem(product))}
-          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, rotate: 15 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, type: "spring", bounce: 0.5 }}
+            className="relative"
+          >
+            <LazyProductItem
+              product={product}
+              likes={likes}
+              hoveredProductId={hoveredProductId}
+              isInBasket={isInBasket}
+              onHover={setHoveredProductId}
+              onLeave={() => setHoveredProductId(null)}
+              onHeartClick={handleHeartClick}
+              onBasketIconClick={handleBasketIconClick}
+              onRemoveItem={(product) => dispatch(removeItem(product))}
+            />
+          </motion.div>
         </Suspense>
       ))}
 
